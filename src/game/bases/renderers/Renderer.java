@@ -1,6 +1,7 @@
 package game.bases.renderers;
 
 import game.bases.Vector2D;
+import game.cameras.Camera;
 
 import java.awt.*;
 
@@ -9,4 +10,5 @@ import java.awt.*;
  */
 public interface Renderer {
     void render(Graphics g, Vector2D position);
+    void render(Graphics g, Vector2D postion, Camera camera);
 }

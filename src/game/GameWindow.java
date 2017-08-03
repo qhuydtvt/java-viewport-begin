@@ -13,6 +13,9 @@ import java.awt.image.BufferedImage;
 import game.bases.*;
 import game.bases.renderers.ImageRenderer;
 import game.bases.scenes.SceneManager;
+import game.cameras.Camera;
+import game.players.Player;
+import game.viewports.ViewPort;
 import tklibs.SpriteUtils;
 
 /**
@@ -27,13 +30,35 @@ public class GameWindow extends JFrame {
 
     long lastTimeUpdate = -1;
 
+    ViewPort mainViewPort;
+
+    private Player malePlayer;
+    private Player femalePlayer;
+
     public GameWindow() {
         setupWindow();
         setupBackBuffer();
         setupInputs();
         addBackground();
+        addPlayers();
         setupStartupScene();
+        addViewPort();
         this.setVisible(true);
+    }
+
+    private void addViewPort() {
+        mainViewPort = new ViewPort();
+        Camera camera = new Camera();
+        camera.setFollowedObject(malePlayer);
+        mainViewPort.setCamera(camera);
+        GameObject.add(camera);
+    }
+
+    private void addPlayers() {
+        malePlayer = Player.createMalePlayer();
+        femalePlayer = Player.createFemalePlayer();
+        GameObject.add(malePlayer.setPosition(50, 300));
+        GameObject.add(femalePlayer.setPosition(100, 300));
     }
 
     private void addBackground() {
@@ -102,7 +127,7 @@ public class GameWindow extends JFrame {
         backBufferGraphics2D.setColor(Color.BLACK);
         backBufferGraphics2D.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        GameObject.renderAll(backBufferGraphics2D);
+        mainViewPort.render(backBufferGraphics2D, GameObject.getGameObjects());
 
         repaint();
     }

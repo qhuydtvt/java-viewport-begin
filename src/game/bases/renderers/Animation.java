@@ -2,6 +2,7 @@ package game.bases.renderers;
 
 import game.bases.FrameCounter;
 import game.bases.Vector2D;
+import game.cameras.Camera;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -44,6 +45,11 @@ public class Animation implements Renderer {
                 (int) (position.x - image.getWidth() / 2),
                 (int) (position.y - image.getHeight() / 2),
                 null);
+    }
+
+    @Override
+    public void render(Graphics g, Vector2D postion, Camera camera) {
+
     }
 
     private void changeIndex() {

@@ -5,6 +5,7 @@ import game.bases.actions.Action;
 import game.bases.physics.Physics;
 import game.bases.physics.PhysicsBody;
 import game.bases.renderers.Renderer;
+import game.cameras.Camera;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -31,6 +32,9 @@ public class GameObject {
     private static Vector<GameObject> gameObjects = new Vector<>();
     private static Vector<GameObject> newGameObjects = new Vector<>();
 
+    public static Vector<GameObject> getGameObjects() {
+        return gameObjects;
+    }
 
     public static void add(GameObject gameObject) {
         boolean duplicate = false;
@@ -73,6 +77,8 @@ public class GameObject {
         }
     }
 
+
+
     public static void clear() {
         gameObjects.clear();
         GameObjectPool.clear();
@@ -93,7 +99,15 @@ public class GameObject {
         return this;
     }
 
+    public GameObject setPosition(float x, float y) {
+        this.position.set(x, y);
+        return this;
+    }
 
+
+    public GameObject setPosition(Vector2D position) {
+        return setPosition(position.x, position.y);
+    }
 
     public boolean isActive() {
         return isActive;
@@ -102,6 +116,18 @@ public class GameObject {
     public void render(Graphics2D g2d) {
         if (renderer != null) {
             renderer.render(g2d, this.position);
+        }
+        for (GameObject child: children) {
+            child.render(g2d);
+        }
+    }
+
+    public void render(Graphics2D g2d, Camera camera) {
+        if (renderer != null) {
+            renderer.render(g2d, this.position, camera);
+        }
+        for (GameObject child: children) {
+            child.render(g2d, camera);
         }
     }
 
