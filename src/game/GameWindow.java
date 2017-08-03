@@ -14,6 +14,8 @@ import game.bases.*;
 import game.bases.renderers.ImageRenderer;
 import game.bases.scenes.SceneManager;
 import game.cameras.Camera;
+import game.players.FemaleMove;
+import game.players.MaleMove;
 import game.players.Player;
 import game.viewports.ViewPort;
 import tklibs.SpriteUtils;
@@ -30,10 +32,15 @@ public class GameWindow extends JFrame {
 
     long lastTimeUpdate = -1;
 
-    ViewPort mainViewPort;
+    ViewPort maleViewPort;
+    ViewPort femaleViewPort;
 
     private Player malePlayer;
     private Player femalePlayer;
+
+    private BufferedImage leftBufferImage;
+    private BufferedImage rightBufferImage;
+    private Graphics2D leftG2d;
 
     public GameWindow() {
         setupWindow();
@@ -42,21 +49,30 @@ public class GameWindow extends JFrame {
         addBackground();
         addPlayers();
         setupStartupScene();
-        addViewPort();
+        addViewPorts();
         this.setVisible(true);
     }
 
-    private void addViewPort() {
-        mainViewPort = new ViewPort();
-        Camera camera = new Camera();
-        camera.setFollowedObject(malePlayer);
-        mainViewPort.setCamera(camera);
-        GameObject.add(camera);
+    private void addViewPorts() {
+        maleViewPort = new ViewPort();
+        maleViewPort.getCamera().follow(malePlayer);
+        maleViewPort.getCamera().getOffset().set(getWidth() / 4, 0);
+
+        femaleViewPort = new ViewPort();
+        femaleViewPort.getCamera().follow(femalePlayer);
+        femaleViewPort.getCamera().getOffset().set(getWidth() / 4, 0);
+
+        GameObject.add(maleViewPort.getCamera());
+        GameObject.add(femaleViewPort.getCamera());
+
     }
 
     private void addPlayers() {
         malePlayer = Player.createMalePlayer();
+        malePlayer.setPlayerMove(new MaleMove());
+
         femalePlayer = Player.createFemalePlayer();
+        femalePlayer.setPlayerMove(new FemaleMove());
         GameObject.add(malePlayer.setPosition(50, 300));
         GameObject.add(femalePlayer.setPosition(100, 300));
     }
@@ -73,6 +89,11 @@ public class GameWindow extends JFrame {
     }
 
     private void setupBackBuffer() {
+        leftBufferImage = new BufferedImage(this.getWidth() / 2, this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        rightBufferImage = new BufferedImage(this.getWidth() / 2, this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        leftG2d = (Graphics2D) leftBufferImage.getGraphics();
+
         backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
     }
@@ -124,10 +145,25 @@ public class GameWindow extends JFrame {
     }
 
     private void render() {
+
+        leftG2d.setColor(Color.BLACK);
+        leftG2d.fillRect(0, 0, this.getWidth() / 2, this.getHeight());
+
+        Graphics2D rightG2d = (Graphics2D) rightBufferImage.getGraphics();
+
+        rightG2d.setColor(Color.BLACK);
+        rightG2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+
+        maleViewPort.render(leftG2d, GameObject.getGameObjects());
+        femaleViewPort.render(rightG2d, GameObject.getGameObjects());
+
         backBufferGraphics2D.setColor(Color.BLACK);
         backBufferGraphics2D.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        mainViewPort.render(backBufferGraphics2D, GameObject.getGameObjects());
+        backBufferGraphics2D.drawImage(leftBufferImage, 0, 0, null);
+        backBufferGraphics2D.drawImage(rightBufferImage, getWidth() / 2, 0, null);
+//        femaleViewPort.render(backBufferGraphics2D, GameObject.getGameObjects());
 
         repaint();
     }

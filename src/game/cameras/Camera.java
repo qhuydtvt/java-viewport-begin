@@ -8,23 +8,30 @@ import game.bases.Vector2D;
  */
 public class Camera extends GameObject {
 
-    private  GameObject followedObject;
+    private GameObject followedObject;
+    private Vector2D offset;
 
     public Camera() {
         super();
+        offset = new Vector2D();
     }
 
-    public void setFollowedObject(GameObject followedObject) {
+    public Vector2D getOffset() {
+        return offset;
+    }
+
+    public Camera follow(GameObject followedObject) {
         this.followedObject = followedObject;
+        return this;
     }
 
     @Override
     public void run(Vector2D parentPosition) {
+        this.position.x = followedObject.position.x;
         super.run(parentPosition);
-        this.screenPosition.x = followedObject.position.x;
     }
 
     public Vector2D translate(Vector2D position) {
-        return position.subtract(this.screenPosition);
+        return position.subtract(this.screenPosition.subtract(offset));
     }
 }

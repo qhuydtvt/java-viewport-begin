@@ -13,7 +13,11 @@ public class InputManager {
     public boolean rightPressed;
     public boolean upPressed;
     public boolean downPressed;
+
+    public boolean wPressed;
     public boolean xPressed;
+    public boolean aPressed;
+    public boolean dPressed;
 
     public static final InputManager instance = new InputManager();
 
@@ -45,9 +49,20 @@ public class InputManager {
             case KeyEvent.VK_DOWN:
                 downPressed = true;
                 break;
+
+            case KeyEvent.VK_A:
+                aPressed = true;
+                break;
+            case KeyEvent.VK_D:
+                dPressed = true;
+                break;
+            case KeyEvent.VK_W:
+                wPressed = true;
+                break;
             case KeyEvent.VK_X:
                 xPressed = true;
                 break;
+
         }
 
         for (InputListener inputListener : inputListeners){
@@ -68,6 +83,16 @@ public class InputManager {
                 break;
             case KeyEvent.VK_DOWN:
                 downPressed = false;
+                break;
+
+            case KeyEvent.VK_A:
+                aPressed = false;
+                break;
+            case KeyEvent.VK_D:
+                dPressed = false;
+                break;
+            case KeyEvent.VK_W:
+                wPressed = false;
                 break;
             case KeyEvent.VK_X:
                 xPressed = false;

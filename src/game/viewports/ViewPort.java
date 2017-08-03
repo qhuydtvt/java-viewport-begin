@@ -3,7 +3,7 @@ package game.viewports;
 import game.bases.GameObject;
 import game.cameras.Camera;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -15,15 +15,15 @@ public class ViewPort {
     private Camera camera;
 
     public ViewPort() {
-        super();
+        camera = new Camera();
+    }
+
+    public Camera getCamera() {
+        return camera;
     }
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
-    }
-
-    public void setCamera(Camera camera) {
-        this.camera = camera;
     }
 
     public void render(Graphics2D g, List<GameObject> gameObjects) {
